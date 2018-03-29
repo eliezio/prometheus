@@ -266,9 +266,10 @@ const (
 )
 
 type nerveMember struct {
-	Host string `json:"host"`
-	Port int    `json:"port"`
-	Name string `json:"name"`
+	Host    string `json:"host"`
+	Address string `json:"address"`
+	Port    int    `json:"port"`
+	Name    string `json:"name"`
 }
 
 func parseNerveMember(data []byte, path string) (model.LabelSet, error) {
@@ -276,6 +277,9 @@ func parseNerveMember(data []byte, path string) (model.LabelSet, error) {
 	err := json.Unmarshal(data, &member)
 	if err != nil {
 		return nil, fmt.Errorf("error unmarshaling nerve member %q: %s", path, err)
+	}
+	if len(member.Host) == 0 {
+		member.Host = member.Address
 	}
 
 	labels := model.LabelSet{}
